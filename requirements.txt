@@ -1,8 +1,8 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
 transformers
 torch
 librosa
 customtkinter
 soundfile
 numpy
-pydub
 pyinstaller

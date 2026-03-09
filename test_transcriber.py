@@ -11,7 +11,6 @@ class TestFrenchTranscriber(unittest.TestCase):
         self.mock_processor = MagicMock()
         self.mock_model = MagicMock()
 
-        mock_processor_from_pretrained.return_value = self.mock_model
         mock_processor_from_pretrained.return_value = self.mock_processor
         mock_model_from_pretrained.return_value = self.mock_model
 
