@@ -1,0 +1,8 @@
+transformers
+torch
+librosa
+customtkinter
+soundfile
+numpy
+pydub
+pyinstaller
