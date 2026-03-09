@@ -11,16 +11,27 @@ class FrenchTranscriber:
         self.model.to("cpu")
         self.sample_rate = 16000
 
-    def transcribe(self, audio_path, chunk_length_s=30, progress_callback=None):
+    def transcribe(self, audio_input, chunk_length_s=30, progress_callback=None):
         """
-        Transcribes an audio file with chunking to manage RAM.
+        Transcribes audio (file path or numpy array) with chunking.
         """
-        # Load audio and resample to 16kHz
-        speech, sr = librosa.load(audio_path, sr=self.sample_rate)
+        if isinstance(audio_input, str):
+            # Load audio and resample to 16kHz
+            speech, sr = librosa.load(audio_input, sr=self.sample_rate)
+        else:
+            # Assume it's a numpy array
+            speech = audio_input
+            # If it's stereo, convert to mono
+            if len(speech.shape) > 1:
+                speech = np.mean(speech, axis=1)
 
         # Calculate chunk size in samples
         chunk_size = chunk_length_s * self.sample_rate
         total_samples = len(speech)
+
+        if total_samples == 0:
+            return ""
+
         chunks = [speech[i:i + chunk_size] for i in range(0, total_samples, chunk_size)]
 
         full_transcription = []
@@ -36,7 +47,8 @@ class FrenchTranscriber:
             # Take argmax and decode
             predicted_ids = torch.argmax(logits, dim=-1)
             transcription = self.processor.batch_decode(predicted_ids)[0]
-            full_transcription.append(transcription)
+            if transcription.strip():
+                full_transcription.append(transcription)
 
             if progress_callback:
                 progress_callback((i + 1) / num_chunks)

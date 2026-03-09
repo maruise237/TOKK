@@ -6,3 +6,9 @@ customtkinter
 soundfile
 numpy
 pyinstaller
+pynput
+sounddevice
+pyperclip
+pyautogui
+pystray
+Pillow
